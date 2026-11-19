@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Reservas - Biblioteca</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header id="topo"></header>
+
+    <main class="conteudo">
+        <h1 id="titulo-pagina">Minhas reservas</h1>
+
+        <p id="mensagem" class="alerta" hidden></p>
+
+        <p>Para reservar, vá até a tela de <a href="/livros.html">Livros</a> e use o botão
+            <strong>Reservar</strong> nos livros sem exemplar disponível.</p>
+
+        <div class="tabela-rolagem">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="so-admin">Usuário</th>
+                        <th>Livro</th>
+                        <th>Data da reserva</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-reservas"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/reservas.js"></script>
+</body>
+</html>

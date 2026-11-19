@@ -8,7 +8,26 @@ async function carregarLivros() {
 
     try {
         livrosCarregados = await api(url);
+        await carregarDisponibilidade(livrosCarregados);
         desenharTabela(livrosCarregados);
+    } catch (e) {
+        mostrarMensagem(e.message);
+    }
+}
+
+// Para cada livro, conta quantos exemplares estao DISPONIVEIS
+// (GET /api/livros/{id}/exemplares; as chamadas rodam em paralelo)
+async function carregarDisponibilidade(livros) {
+    await Promise.all(livros.map(async livro => {
+        const exemplares = await api('/api/livros/' + livro.id + '/exemplares');
+        livro.disponiveis = exemplares.filter(ex => ex.status === 'DISPONIVEL').length;
+    }));
+}
+
+async function reservarLivro(id) {
+    try {
+        await api('/api/reservas', { method: 'POST', body: { livroId: id } });
+        mostrarMensagem('Reserva feita! Acompanhe em Reservas.', 'sucesso');
     } catch (e) {
         mostrarMensagem(e.message);
     }
@@ -16,10 +35,9 @@ async function carregarLivros() {
 
 function desenharTabela(livros) {
     const corpo = document.getElementById('tabela-livros');
-    const colunas = ehAdmin() ? 7 : 6;
 
     if (livros.length === 0) {
-        corpo.innerHTML = `<tr><td colspan="${colunas}">Nenhum livro encontrado.</td></tr>`;
+        corpo.innerHTML = '<tr><td colspan="8">Nenhum livro encontrado.</td></tr>';
         return;
     }
 
@@ -31,11 +49,15 @@ function desenharTabela(livros) {
             <td>${escaparHtml(livro.editora)}</td>
             <td>${escaparHtml(livro.anoPublicacao)}</td>
             <td>${escaparHtml(livro.isbn)}</td>
-            ${ehAdmin() ? `
+            <td>${livro.disponiveis}</td>
             <td class="acoes">
+                ${livro.disponiveis === 0
+                    ? `<button class="pequeno secundario" onclick="reservarLivro(${livro.id})">Reservar</button>`
+                    : ''}
+                ${ehAdmin() ? `
                 <button class="pequeno" onclick="editarLivro(${livro.id})">Editar</button>
-                <button class="pequeno perigo" onclick="excluirLivro(${livro.id})">Excluir</button>
-            </td>` : ''}
+                <button class="pequeno perigo" onclick="excluirLivro(${livro.id})">Excluir</button>` : ''}
+            </td>
         </tr>`).join('');
 }
 
