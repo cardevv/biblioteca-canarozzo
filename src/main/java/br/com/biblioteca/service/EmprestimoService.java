@@ -1,5 +1,6 @@
 package br.com.biblioteca.service;
 
+import br.com.biblioteca.dto.DevolucaoResponse;
 import br.com.biblioteca.dto.EmprestimoRequest;
 import br.com.biblioteca.dto.EmprestimoResponse;
 import br.com.biblioteca.exception.RecursoNaoEncontradoException;
@@ -15,7 +16,9 @@ import br.com.biblioteca.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Service
 public class EmprestimoService {
@@ -23,6 +26,7 @@ public class EmprestimoService {
     // Constantes das regras de negocio
     public static final int PRAZO_DIAS = 14;
     public static final int LIMITE_EMPRESTIMOS_ATIVOS = 3;
+    public static final BigDecimal MULTA_POR_DIA = new BigDecimal("2.00");
 
     private final EmprestimoRepository emprestimoRepository;
     private final ExemplarRepository exemplarRepository;
@@ -66,5 +70,36 @@ public class EmprestimoService {
         exemplar.setStatus(StatusExemplar.EMPRESTADO);
 
         return EmprestimoResponse.de(emprestimoRepository.save(emprestimo));
+    }
+
+    @Transactional
+    public DevolucaoResponse devolver(Long emprestimoId) {
+        Emprestimo emprestimo = emprestimoRepository.findById(emprestimoId)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Empréstimo não encontrado: " + emprestimoId));
+
+        if (emprestimo.getStatus() == StatusEmprestimo.DEVOLVIDO) {
+            throw new RegraNegocioException("Este empréstimo já foi devolvido");
+        }
+
+        LocalDate hoje = LocalDate.now();
+        emprestimo.setDataDevolucao(hoje);
+        emprestimo.setStatus(StatusEmprestimo.DEVOLVIDO);
+        // O exemplar volta a ficar disponivel
+        emprestimo.getExemplar().setStatus(StatusExemplar.DISPONIVEL);
+
+        // Dias de atraso = dias entre a data prevista e hoje (nunca negativo)
+        long diasAtraso = Math.max(0, ChronoUnit.DAYS.between(emprestimo.getDataPrevistaDevolucao(), hoje));
+        // Multa: R$ 2,00 por dia de atraso (BigDecimal evita erro de arredondamento com dinheiro)
+        BigDecimal valorMulta = MULTA_POR_DIA.multiply(BigDecimal.valueOf(diasAtraso));
+
+        return new DevolucaoResponse(
+                emprestimo.getId(),
+                emprestimo.getExemplar().getLivro().getTitulo(),
+                emprestimo.getExemplar().getCodigo(),
+                emprestimo.getDataPrevistaDevolucao(),
+                hoje,
+                diasAtraso,
+                valorMulta
+        );
     }
 }
