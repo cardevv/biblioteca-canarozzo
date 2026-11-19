@@ -62,6 +62,8 @@ function montarMenu() {
         <nav class="menu">
             <a href="/index.html" class="marca">Biblioteca</a>
             <a href="/livros.html">Livros</a>
+            <a href="/autores.html">Autores</a>
+            <a href="/categorias.html">Categorias</a>
             <a href="/emprestimos.html">Empréstimos</a>
             <a href="/reservas.html">Reservas</a>
             <span class="espaco"></span>

@@ -14,6 +14,48 @@
 
         <p id="mensagem" class="alerta" hidden></p>
 
+        <!-- Formulario de cadastro/edicao: so aparece para ADMIN -->
+        <section class="painel so-admin">
+            <h2 id="titulo-form">Novo livro</h2>
+            <form id="form-livro">
+                <input type="hidden" id="livro-id">
+
+                <div class="linha">
+                    <div>
+                        <label for="isbn">ISBN</label>
+                        <input type="text" id="isbn" required>
+                    </div>
+                    <div>
+                        <label for="titulo">Título</label>
+                        <input type="text" id="titulo" required>
+                    </div>
+                </div>
+
+                <div class="linha">
+                    <div>
+                        <label for="editora">Editora</label>
+                        <input type="text" id="editora">
+                    </div>
+                    <div>
+                        <label for="ano">Ano de publicação</label>
+                        <input type="number" id="ano" min="0" max="3000">
+                    </div>
+                    <div>
+                        <label for="categoria">Categoria</label>
+                        <select id="categoria" required></select>
+                    </div>
+                </div>
+
+                <label for="autores">Autores (segure Ctrl para escolher vários)</label>
+                <select id="autores" multiple required></select>
+
+                <div class="acoes-form">
+                    <button type="submit">Salvar</button>
+                    <button type="button" class="secundario" id="cancelar-edicao">Cancelar</button>
+                </div>
+            </form>
+        </section>
+
         <section class="painel">
             <form id="form-busca" class="linha">
                 <input type="search" id="busca" placeholder="Buscar por título...">
@@ -34,6 +76,7 @@
                         <th>Editora</th>
                         <th>Ano</th>
                         <th>ISBN</th>
+                        <th class="so-admin">Ações</th>
                     </tr>
                 </thead>
                 <tbody id="tabela-livros"></tbody>
