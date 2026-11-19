@@ -13,4 +13,14 @@ public interface ExemplarRepository extends JpaRepository<Exemplar, Long> {
 
     // Quantos exemplares de um livro estao com determinado status
     long countByLivroIdAndStatus(Long livroId, StatusExemplar status);
+
+    List<Exemplar> findByLivroIdOrderByCodigo(Long livroId);
+
+    List<Exemplar> findAllByOrderByCodigo();
+
+    long countByLivroId(Long livroId);
+
+    boolean existsByLivroId(Long livroId);
+
+    boolean existsByCodigo(String codigo);
 }
