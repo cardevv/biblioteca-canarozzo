@@ -1,5 +1,6 @@
 package br.com.biblioteca.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -30,5 +31,12 @@ public class GlobalExceptionHandler {
                 .map(erro -> erro.getField() + ": " + erro.getDefaultMessage())
                 .orElse("Dados inválidos");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("erro", mensagem));
+    }
+
+    // Tentativa de apagar um registro ainda referenciado por outro (chave estrangeira)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> tratarIntegridade(DataIntegrityViolationException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("erro", "Operação não permitida: o registro está ligado a outros dados"));
     }
 }
