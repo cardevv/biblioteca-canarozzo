@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Livros - Biblioteca</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header id="topo"></header>
+
+    <main class="conteudo">
+        <h1>Livros</h1>
+
+        <p id="mensagem" class="alerta" hidden></p>
+
+        <section class="painel">
+            <form id="form-busca" class="linha">
+                <input type="search" id="busca" placeholder="Buscar por título...">
+                <div class="acoes-form" style="margin-top:0; flex:0">
+                    <button type="submit">Buscar</button>
+                    <button type="button" class="secundario" id="limpar-busca">Limpar</button>
+                </div>
+            </form>
+        </section>
+
+        <div class="tabela-rolagem">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Autores</th>
+                        <th>Categoria</th>
+                        <th>Editora</th>
+                        <th>Ano</th>
+                        <th>ISBN</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-livros"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/livros.js"></script>
+</body>
+</html>
