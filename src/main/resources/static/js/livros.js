@@ -117,6 +117,32 @@ async function excluirLivro(id) {
     }
 }
 
+// Busca o ISBN na API externa (via nosso back-end) e preenche o formulario
+async function buscarIsbn() {
+    const isbn = document.getElementById('isbn').value.trim();
+    if (!isbn) {
+        mostrarMensagem('Digite um ISBN para buscar.');
+        return;
+    }
+    limparMensagem();
+    try {
+        const dados = await api('/api/isbn/' + encodeURIComponent(isbn));
+        document.getElementById('titulo').value = dados.title || '';
+        document.getElementById('editora').value = dados.publisher || '';
+        document.getElementById('ano').value = dados.year || '';
+
+        // Marca os autores que ja estao cadastrados com o mesmo nome
+        const nomes = (dados.authors || []).map(n => n.toLowerCase());
+        for (const opcao of document.getElementById('autores').options) {
+            if (nomes.includes(opcao.textContent.toLowerCase())) opcao.selected = true;
+        }
+        const autores = (dados.authors || []).join(', ') || 'não informados';
+        mostrarMensagem('Dados encontrados. Autores na BrasilAPI: ' + autores, 'sucesso');
+    } catch (e) {
+        mostrarMensagem(e.message);
+    }
+}
+
 document.getElementById('form-busca').addEventListener('submit', evento => {
     evento.preventDefault(); // nao recarrega a pagina
     carregarLivros();
@@ -131,6 +157,7 @@ iniciarPagina().then(async () => {
     if (ehAdmin()) {
         document.getElementById('form-livro').addEventListener('submit', salvarLivro);
         document.getElementById('cancelar-edicao').addEventListener('click', limparFormulario);
+        document.getElementById('buscar-isbn').addEventListener('click', buscarIsbn);
         await carregarOpcoesFormulario();
     }
     carregarLivros();

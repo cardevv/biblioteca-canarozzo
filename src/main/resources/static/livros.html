@@ -23,7 +23,11 @@
                 <div class="linha">
                     <div>
                         <label for="isbn">ISBN</label>
-                        <input type="text" id="isbn" required>
+                        <div class="linha" style="flex-wrap:nowrap">
+                            <input type="text" id="isbn" required>
+                            <!-- Consulta a BrasilAPI e preenche titulo, editora e ano -->
+                            <button type="button" id="buscar-isbn" style="flex:0; white-space:nowrap">Buscar ISBN</button>
+                        </div>
                     </div>
                     <div>
                         <label for="titulo">Título</label>
