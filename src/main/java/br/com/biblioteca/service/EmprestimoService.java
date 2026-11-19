@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Service
 public class EmprestimoService {
@@ -38,6 +39,22 @@ public class EmprestimoService {
         this.emprestimoRepository = emprestimoRepository;
         this.exemplarRepository = exemplarRepository;
         this.usuarioRepository = usuarioRepository;
+    }
+
+    // Lista todos ou filtra pelo status (ATIVO/DEVOLVIDO)
+    @Transactional(readOnly = true)
+    public List<EmprestimoResponse> listar(StatusEmprestimo status) {
+        List<Emprestimo> emprestimos = (status == null)
+                ? emprestimoRepository.findAllByOrderByIdDesc()
+                : emprestimoRepository.findByStatusOrderByIdDesc(status);
+        return emprestimos.stream().map(EmprestimoResponse::de).toList();
+    }
+
+    // Emprestimos do usuario logado (identificado pelo email do login)
+    @Transactional(readOnly = true)
+    public List<EmprestimoResponse> listarDoUsuario(String email) {
+        return emprestimoRepository.findByUsuarioEmailOrderByIdDesc(email).stream()
+                .map(EmprestimoResponse::de).toList();
     }
 
     @Transactional
