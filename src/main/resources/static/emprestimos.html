@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Empréstimos - Biblioteca</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header id="topo"></header>
+
+    <main class="conteudo">
+        <h1>Empréstimos</h1>
+
+        <p id="mensagem" class="alerta" hidden></p>
+
+        <!-- ===== Area do ADMIN ===== -->
+        <section class="painel so-admin">
+            <h2>Exemplares</h2>
+            <form id="form-exemplar" class="linha">
+                <select id="exemplar-livro" required></select>
+                <div class="acoes-form" style="margin-top:0; flex:0">
+                    <button type="submit">Adicionar exemplar</button>
+                </div>
+            </form>
+            <div class="tabela-rolagem" style="margin-top:12px">
+                <table>
+                    <thead>
+                        <tr><th>Código</th><th>Livro</th><th>Status</th><th>Ações</th></tr>
+                    </thead>
+                    <tbody id="tabela-exemplares"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="painel so-admin">
+            <h2>Novo empréstimo</h2>
+            <form id="form-emprestimo">
+                <div class="linha">
+                    <div>
+                        <label for="usuario">Usuário</label>
+                        <select id="usuario" required></select>
+                    </div>
+                    <div>
+                        <label for="exemplar">Exemplar disponível</label>
+                        <select id="exemplar" required></select>
+                    </div>
+                </div>
+                <div class="acoes-form">
+                    <button type="submit">Emprestar (prazo de 14 dias)</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="painel so-admin">
+            <h2>Todos os empréstimos</h2>
+            <label for="filtro-status">Filtrar por status</label>
+            <select id="filtro-status" style="max-width:220px">
+                <option value="">Todos</option>
+                <option value="ATIVO">Ativos</option>
+                <option value="DEVOLVIDO">Devolvidos</option>
+            </select>
+        </section>
+
+        <!-- ===== Tabela (ADMIN: todos; LEITOR: so os seus) ===== -->
+        <h2 id="titulo-tabela">Meus empréstimos</h2>
+        <div class="tabela-rolagem">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="so-admin">Usuário</th>
+                        <th>Livro</th>
+                        <th>Exemplar</th>
+                        <th>Empréstimo</th>
+                        <th>Devolver até</th>
+                        <th>Devolvido em</th>
+                        <th>Status</th>
+                        <th class="so-admin">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-emprestimos"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/emprestimos.js"></script>
+</body>
+</html>
