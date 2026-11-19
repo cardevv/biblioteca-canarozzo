@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Início - Biblioteca</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- O menu e montado pelo api.js -->
+    <header id="topo"></header>
+
+    <main class="conteudo">
+        <h1>Olá, <span id="nome-usuario"></span>!</h1>
+        <p>Escolha uma opção no menu ou nos atalhos abaixo.</p>
+
+        <div class="cartoes">
+            <a class="cartao" href="/livros.html">
+                <h2>Livros</h2>
+                <p>Consulte o acervo e busque por título.</p>
+            </a>
+            <a class="cartao" href="/emprestimos.html">
+                <h2>Empréstimos</h2>
+                <p>Acompanhe empréstimos e devoluções.</p>
+            </a>
+            <a class="cartao" href="/reservas.html">
+                <h2>Reservas</h2>
+                <p>Reserve livros sem exemplar disponível.</p>
+            </a>
+        </div>
+    </main>
+
+    <script src="/js/api.js"></script>
+    <script>
+        iniciarPagina().then(usuario => {
+            document.getElementById('nome-usuario').textContent = usuario.nome;
+        });
+    </script>
+</body>
+</html>

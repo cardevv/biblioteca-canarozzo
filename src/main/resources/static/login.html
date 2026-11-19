@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Entrar - Biblioteca</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="pagina-login">
+    <main class="caixa-login">
+        <h1>Biblioteca</h1>
+        <p class="subtitulo">Entre com seu e-mail e senha</p>
+
+        <p id="mensagem" class="alerta" hidden></p>
+
+        <!-- O Spring Security recebe este POST em /login (campos username e password) -->
+        <form method="post" action="/login">
+            <label for="username">E-mail</label>
+            <input type="email" id="username" name="username" required autofocus>
+
+            <label for="password">Senha</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Entrar</button>
+        </form>
+
+        <p class="dica">Teste: admin@biblioteca.com / admin123 ou leitor@biblioteca.com / leitor123</p>
+    </main>
+
+    <script>
+        // Mostra mensagens conforme o parametro da URL (?erro ou ?saiu)
+        const params = new URLSearchParams(window.location.search);
+        const msg = document.getElementById('mensagem');
+        if (params.has('erro')) {
+            msg.textContent = 'E-mail ou senha inválidos.';
+            msg.hidden = false;
+        } else if (params.has('saiu')) {
+            msg.textContent = 'Você saiu do sistema.';
+            msg.className = 'alerta sucesso';
+            msg.hidden = false;
+        }
+    </script>
+</body>
+</html>
