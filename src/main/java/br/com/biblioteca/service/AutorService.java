@@ -4,7 +4,9 @@ import br.com.biblioteca.dto.AutorRequest;
 import br.com.biblioteca.dto.AutorResponse;
 import br.com.biblioteca.exception.RecursoNaoEncontradoException;
 import br.com.biblioteca.model.Autor;
+import br.com.biblioteca.exception.RegraNegocioException;
 import br.com.biblioteca.repository.AutorRepository;
+import br.com.biblioteca.repository.LivroRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,9 +16,11 @@ import java.util.List;
 public class AutorService {
 
     private final AutorRepository autorRepository;
+    private final LivroRepository livroRepository;
 
-    public AutorService(AutorRepository autorRepository) {
+    public AutorService(AutorRepository autorRepository, LivroRepository livroRepository) {
         this.autorRepository = autorRepository;
+        this.livroRepository = livroRepository;
     }
 
     public List<AutorResponse> listar() {
@@ -49,6 +53,10 @@ public class AutorService {
     @Transactional
     public void excluir(Long id) {
         Autor autor = buscarEntidade(id);
+        // Regra: nao excluir autor ligado a algum livro
+        if (livroRepository.existsByAutoresId(id)) {
+            throw new RegraNegocioException("Não é possível excluir: o autor está ligado a livros");
+        }
         autorRepository.delete(autor);
     }
 }

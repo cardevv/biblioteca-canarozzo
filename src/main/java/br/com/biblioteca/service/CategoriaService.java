@@ -6,6 +6,7 @@ import br.com.biblioteca.exception.RecursoNaoEncontradoException;
 import br.com.biblioteca.exception.RegraNegocioException;
 import br.com.biblioteca.model.Categoria;
 import br.com.biblioteca.repository.CategoriaRepository;
+import br.com.biblioteca.repository.LivroRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,9 +16,11 @@ import java.util.List;
 public class CategoriaService {
 
     private final CategoriaRepository categoriaRepository;
+    private final LivroRepository livroRepository;
 
-    public CategoriaService(CategoriaRepository categoriaRepository) {
+    public CategoriaService(CategoriaRepository categoriaRepository, LivroRepository livroRepository) {
         this.categoriaRepository = categoriaRepository;
+        this.livroRepository = livroRepository;
     }
 
     public List<CategoriaResponse> listar() {
@@ -50,6 +53,10 @@ public class CategoriaService {
     @Transactional
     public void excluir(Long id) {
         Categoria categoria = buscarEntidade(id);
+        // Regra: nao excluir categoria que ainda tem livros
+        if (livroRepository.existsByCategoriaId(id)) {
+            throw new RegraNegocioException("Não é possível excluir: existem livros nesta categoria");
+        }
         categoriaRepository.delete(categoria);
     }
 
